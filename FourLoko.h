@@ -60,30 +60,27 @@ void getOpponentSensors(int *detectionArray) {
 }
 
 int whereIsOpponent() { // 0 is straight ahead, + is to the left - is to the right
-  int result = 0; // which direction did is the opponent?
+  int result = 0; // which direction did is the opponent, 0 is straight ahead, nothingDetected is no detection, -2 is far right, 2 is far left.
   int detectionArray[5]; // declare array of current opponennt sensor states
   int total = 0;
-  int summer = 0;
+  int accum = 0;
 
   getOpponentSensors(&detectionArray[0]);
-  // todo: remove this and replace with actual logic to figure out where opponent is and return a number
+  //  printOpponentSensors(detectionArray);
 
-  // TODO: find the centroid of the array returned by the getOpponentSensors
-
-
-//    printOpponentSensors(detectionArray);
+  // find the centroid of the array returned by the getOpponentSensors
   for (int i = 0; i < 5; i++) {
     total += detectionArray[i]; // find total "mass" of the collection of bodies
   }
 
-  summer += 2*detectionArray[0];
-  summer += 1*detectionArray[1];
+  accum += 2*detectionArray[0];
+  accum += 1*detectionArray[1];
   // the center one doesn't deflect the direction to either side!  
-  summer += 0*detectionArray[2];
-  summer += -1*detectionArray[3];
-  summer += -2*detectionArray[4];
+  // accum += 0*detectionArray[2];
+  accum += -1*detectionArray[3];
+  accum += -2*detectionArray[4];
 
-  result = total == 0 ? 999 : summer / total;
+  result = total == 0 ? nothingDetected : accum / total;
   
   Serial.println(result);
 

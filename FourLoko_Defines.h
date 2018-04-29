@@ -23,14 +23,6 @@
 #define greenLed  10
 #define blueLed   11
 
-/**
-#define fLefttPx 2    // far left of center opponent IR detector TEMPORARY, THIS IS SHARED WITH USER BUTTON2
-#define leftPx   4   // left of center opponent IR detector
-#define ctrPx   8     // center IR receiver
-#define rightPx A3    // IR Receiver for opponent detection, this one is right of center
-#define fRightPx  A4  // far right of center IR detector
-*/
-
 #define fLefttPx 4    // CENTER PROX TEMPORARY, THIS IS SHARED WITH USER BUTTON2
 #define leftPx   0    // CENTER EDGE
 #define ctrPx   1     // center IR receiver
@@ -45,7 +37,7 @@ int zThetaDisplacement = 0;
 #define zThetaDeadband   1
 
 #define none      0
-#define farLeft   1
+#define farLeft   1 // todo check if changing to array weights, i.e., -2, -1, 0, 1, 2 works, if so, a much better solution
 #define left      2
 #define center    3
 #define right     4
