@@ -256,7 +256,7 @@ int getVsense() {
 }
 
 void setGreenLed(bool value) {
-  if (value) {
+  if (value == true) {
     digitalWrite(greenLed, LOW);
   } else {
     digitalWrite(greenLed, HIGH);
@@ -264,7 +264,7 @@ void setGreenLed(bool value) {
 }
 
 void setBlueLed(bool value) {
-  if (value) {
+  if (value == true) {
     digitalWrite(blueLed, LOW);
   } else {
     digitalWrite(blueLed, HIGH);

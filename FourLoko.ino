@@ -27,8 +27,8 @@ void setup() {
 
 
 void loop() { // not using the loop for anything
-  Serial.print("Left edge: ");
-  Serial.print(leftEdge());
-  Serial.print(" Right edge: ");
-    Serial.println(rightEdge());
+  Serial.print("voltsRaw: ");
+  Serial.print(getVsense());
+  Serial.print(" volts: ");
+  Serial.println(getVsense() / 38);
 }

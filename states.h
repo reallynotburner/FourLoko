@@ -14,9 +14,9 @@ void fight() {
   int priorTracking = left;
 
   // opening move, N.A. for now!
-  motor(left, searchSpeed, braking);
-  motor(right, searchSpeed, braking);
-  delay(150);
+//  motor(left, searchSpeed, braking);
+//  motor(right, searchSpeed, braking);
+//  delay(150);
 
   searchRight();
 
@@ -70,13 +70,6 @@ void fight() {
           break;
       }
     }
-
-    // States!!!
-    // search right
-    // search left
-    // home in on opponent
-
-
     delay(10);
   }
 }
@@ -99,12 +92,13 @@ void wait() {
   int currentCount = 0;
   int voltage = 0;
   voltage = getVsense();
+  setGreenLed(false);
+  setBlueLed(false);
 
   while (1) {
 
     if (getUsrBtn2()) {
       while (getUsrBtn2()) {} // wait until button is released
-      Serial.println("Wait is Over!");
       countDown();
       break;
     }
@@ -114,7 +108,6 @@ void wait() {
     }
 
     if (voltage > fiftyPercentBattery) { // longBlink
-
       if (currentCount < longBlink) {
         setBlueLed(true);
       } else {
