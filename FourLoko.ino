@@ -27,8 +27,4 @@ void setup() {
 
 
 void loop() { // not using the loop for anything
-  Serial.print("voltsRaw: ");
-  Serial.print(getVsense());
-  Serial.print(" volts: ");
-  Serial.println(getVsense() / 38);
 }

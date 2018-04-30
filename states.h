@@ -6,6 +6,27 @@
 */
 unsigned long now = 0;
 
+void dragRace() {
+  now = millis();
+  int currentSpeed = 0;
+  int slewRate = 1;
+  
+  unsigned long then = now + 200; // when to stop experiment
+  
+  motor(left, currentSpeed, coasting);
+  motor(right, currentSpeed, coasting);
+  while(currentSpeed < 255) { // 
+    delayMicroseconds(250);
+    currentSpeed += slewRate;
+    motor(left, currentSpeed, coasting);
+    motor(right, currentSpeed, coasting);
+  }
+  delay(100);
+
+  brake(right);
+  brake(left);
+}
+
 void fight() {
   int fightBegan = millis();
   setBlueLed(false); // turn off all lights
@@ -14,9 +35,9 @@ void fight() {
   int priorTracking = left;
 
   // opening move, N.A. for now!
-//  motor(left, searchSpeed, braking);
-//  motor(right, searchSpeed, braking);
-//  delay(150);
+  motor(left, searchSpeed, braking);
+  motor(right, searchSpeed, braking);
+  delay(150);
 
   searchRight();
 
@@ -36,7 +57,7 @@ void fight() {
       } else {
         searchLeft();
       }
-          
+
     } else { // we have a detection!!!!!!
       switch (opponentPosition) {
         case 2:
@@ -78,19 +99,21 @@ void countDown() {
   for (int i = 0; i < 5; i++ ) {
     setBlueLed(true);
     setGreenLed(true);
-    delay(500);
+    delay(498);
     setBlueLed(false);
     setGreenLed(false);
-    delay(500);
+    delay(498);
   }
-  fight();
-  brake(right);
-  brake(left);
+
+  dragRace();
+  //  fight();
 }
 
 void wait() {
   int currentCount = 0;
   int voltage = 0;
+  brake(right);
+  brake(left);
   voltage = getVsense();
   setGreenLed(false);
   setBlueLed(false);
@@ -100,7 +123,6 @@ void wait() {
     if (getUsrBtn2()) {
       while (getUsrBtn2()) {} // wait until button is released
       countDown();
-      break;
     }
 
     if (currentCount > totalCount) {
@@ -129,3 +151,4 @@ void wait() {
     delay(10);
   }
 }
+
