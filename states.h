@@ -6,6 +6,27 @@
 */
 unsigned long now = 0;
 
+void dragRace() {
+  now = millis();
+  int currentSpeed = 0;
+  int slewRate = 1;
+
+  unsigned long then = now + 200; // when to stop experiment
+
+  motor(left, currentSpeed, coasting);
+  motor(right, currentSpeed, coasting);
+  while (currentSpeed < 255) { //
+    delayMicroseconds(250);
+    currentSpeed += slewRate;
+    motor(left, currentSpeed, coasting);
+    motor(right, currentSpeed, coasting);
+  }
+  delay(100);
+
+  brake(right);
+  brake(left);
+}
+
 void fight() {
   int fightBegan = millis();
   setBlueLed(false); // turn off all lights
@@ -26,9 +47,12 @@ void fight() {
 
     opponentPosition = whereIsOpponent();
 
+    if (getUsrBtn2() && getUsrBtn1()) {
+      break;
+    }
     if (opponentPosition == nothingDetected) { // we can allow checking of line sensors
-      // recover from ring edge right
-      // recover from ring edge left
+      // TODO: recover from ring edge right
+      // TODO: recover from ring edge left
 
       // search the priorTracking
       if (priorTracking == right) { // todo revert me!QQQQQQ
@@ -36,7 +60,7 @@ void fight() {
       } else {
         searchLeft();
       }
-          
+
     } else { // we have a detection!!!!!!
       switch (opponentPosition) {
         case 2:
@@ -70,18 +94,16 @@ void fight() {
           break;
       }
     }
-
-    // States!!!
-    // search right
-    // search left
-    // home in on opponent
-
-
-    delay(10);
+    delay(10); // TODO: what if we updated more often?  Like every 250uS?
   }
+  brake(right);
+  brake(left);
+  return;
 }
 
 void countDown() {
+  brake(left);
+  brake(right);
   for (int i = 0; i < 5; i++ ) {
     setBlueLed(true);
     setGreenLed(true);
@@ -90,23 +112,24 @@ void countDown() {
     setGreenLed(false);
     delay(500);
   }
+
   fight();
-  brake(right);
-  brake(left);
+  return;
 }
 
 void wait() {
   int currentCount = 0;
   int voltage = 0;
   voltage = getVsense();
+  setGreenLed(false);
+  setBlueLed(false);
 
   while (1) {
 
     if (getUsrBtn2()) {
       while (getUsrBtn2()) {} // wait until button is released
-      Serial.println("Wait is Over!");
       countDown();
-      break;
+      delay(1000);
     }
 
     if (currentCount > totalCount) {
@@ -114,7 +137,6 @@ void wait() {
     }
 
     if (voltage > fiftyPercentBattery) { // longBlink
-
       if (currentCount < longBlink) {
         setBlueLed(true);
       } else {
@@ -136,3 +158,4 @@ void wait() {
     delay(10);
   }
 }
+

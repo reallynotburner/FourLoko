@@ -51,13 +51,12 @@ int zThetaDisplacement = 0;
 #define twentyPercentBattery 420
 #define fiftyPercentBattery 433
 #define longBlink 35
-#define shortBlink 10
+#define shortBlink 5
 #define totalCount 50 // how many wait loops is the battery blinker?
 
-//#define searchSpeed 120 // todo revert me
-//#define attackSpeed 200
-#define searchSpeed 50
-#define attackSpeed 100
+#define searchSpeed 120 // todo revert me
+#define attackSpeed 255
+
 
 
 

@@ -26,9 +26,5 @@ void setup() {
 }
 
 
-void loop() { // not using the loop for anything
-  Serial.print("Left edge: ");
-  Serial.print(leftEdge());
-  Serial.print(" Right edge: ");
-    Serial.println(rightEdge());
+void loop() {
 }
