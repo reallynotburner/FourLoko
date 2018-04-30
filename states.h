@@ -10,12 +10,12 @@ void dragRace() {
   now = millis();
   int currentSpeed = 0;
   int slewRate = 1;
-  
+
   unsigned long then = now + 200; // when to stop experiment
-  
+
   motor(left, currentSpeed, coasting);
   motor(right, currentSpeed, coasting);
-  while(currentSpeed < 255) { // 
+  while (currentSpeed < 255) { //
     delayMicroseconds(250);
     currentSpeed += slewRate;
     motor(left, currentSpeed, coasting);
@@ -47,9 +47,12 @@ void fight() {
 
     opponentPosition = whereIsOpponent();
 
+    if (getUsrBtn2() && getUsrBtn1()) {
+      break;
+    }
     if (opponentPosition == nothingDetected) { // we can allow checking of line sensors
-      // recover from ring edge right
-      // recover from ring edge left
+      // TODO: recover from ring edge right
+      // TODO: recover from ring edge left
 
       // search the priorTracking
       if (priorTracking == right) { // todo revert me!QQQQQQ
@@ -91,29 +94,32 @@ void fight() {
           break;
       }
     }
-    delay(10);
+    delay(10); // TODO: what if we updated more often?  Like every 250uS?
   }
+  brake(right);
+  brake(left);
+  return;
 }
 
 void countDown() {
+  brake(left);
+  brake(right);
   for (int i = 0; i < 5; i++ ) {
     setBlueLed(true);
     setGreenLed(true);
-    delay(498);
+    delay(500);
     setBlueLed(false);
     setGreenLed(false);
-    delay(498);
+    delay(500);
   }
 
-  dragRace();
-  //  fight();
+  fight();
+  return;
 }
 
 void wait() {
   int currentCount = 0;
   int voltage = 0;
-  brake(right);
-  brake(left);
   voltage = getVsense();
   setGreenLed(false);
   setBlueLed(false);
@@ -123,6 +129,7 @@ void wait() {
     if (getUsrBtn2()) {
       while (getUsrBtn2()) {} // wait until button is released
       countDown();
+      delay(1000);
     }
 
     if (currentCount > totalCount) {

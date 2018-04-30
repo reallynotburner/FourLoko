@@ -26,5 +26,5 @@ void setup() {
 }
 
 
-void loop() { // not using the loop for anything
+void loop() {
 }

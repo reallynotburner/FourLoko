@@ -82,8 +82,6 @@ int whereIsOpponent() { // 0 is straight ahead, + is to the left - is to the rig
 
   result = total == 0 ? nothingDetected : accum / total;
   
-  Serial.println(result);
-
   return result;
 }
 
