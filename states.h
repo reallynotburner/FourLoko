@@ -35,16 +35,41 @@ void edgeRecover(int mode) {
   }
   edgeRecoverTime = millis();
   while (millis() < edgeRecoverTime + recoveryReverseTime) { // how long to back it up
+    // BIG TODO: put in opponent detection here so we can break out of this mess!!!!!!!
     motor(left, -searchSpeed, braking);
     motor(right, -searchSpeed, braking);
   }
+
+
+  brake(right); // TODO: REMOVE, JUST USING FOR DEBUGGIN
+  brake(left); // TODO: REMOVE, JUST USING FOR DEBUGGIN
+  delay(0); // TODO: REMOVE, JUST USING FOR DEBUGGIN
+
+
   edgeRecoverTime = millis();
   while (millis() < edgeRecoverTime + recoveryTurnTime) { // how long to turn to re-enter battle
+    // BIG TODO: put in opponent detection here so we can break out of this mess!!!!!!!
     if (mode == left) {
       motor(left, searchSpeed, braking);
       motor(right, -searchSpeed, braking);
     } else {
       motor(left, -searchSpeed, braking);
+      motor(right, searchSpeed, braking);
+    }
+  }
+
+
+  brake(right); // TODO: REMOVE, JUST USING FOR DEBUGGIN
+  brake(left); // TODO: REMOVE, JUST USING FOR DEBUGGIN
+  delay(0); // TODO: REMOVE, JUST USING FOR DEBUGGIN
+
+  edgeRecoverTime = millis();
+  while (millis() < edgeRecoverTime + recoveryStraightTime) { // go straight for a bit
+    // BIG TODO: put in opponent detection here so we can break out of this mess!!!!!!!
+    if (leftEdge() || rightEdge()) {
+      break;
+    } else {
+      motor(left, searchSpeed, braking);
       motor(right, searchSpeed, braking);
     }
   }
@@ -62,9 +87,7 @@ void fight() {
   // opening move, N.A. for now!
   /**
      todo: jab 19 January 2019
-     This should be interruptible by opponent detection
-     Like this is the opening move UNTIL opponent detection occurs.
-     ALSO should have exit based on time "now" instead.  Perhaps priorTracking could have more than two states....
+     SHOULD HAVE SEVERAL OPTIONS BASED ON PUSHING THE usrButton 1
   */
 
   while ((millis() < fightBegan + openingMoveTime) && whereIsOpponent() == nothingDetected) {
@@ -78,12 +101,12 @@ void fight() {
     now = millis();
     /**
        now is an important state marker.  It can time-bound what we are doing here.
-       that plus "priorTracking" would be very powerful, no?
        TODO: use now!!!!
     */
 
 
-    opponentPosition = whereIsOpponent();
+    //    opponentPosition = whereIsOpponent(); // TODO: I REALLY MEAN THIS, UNCOMMENT THIS !!!!!! jab 20 JAN 2019
+    opponentPosition == nothingDetected; // todo: revert, just setting to NONE SO CAN DEBUG RING EDGE BEHAVIOR
 
     if (getUsrBtn2() && getUsrBtn1()) {
       break;
@@ -100,16 +123,16 @@ void fight() {
         edgeRecover(center);
       } else if (lefttEdgeDetected) {
         edgeRecover(left);
+        priorTracking = right;
       } else if (rightEdgeDetected) {
         edgeRecover(right);
+        priorTracking = left;
+
       } else {
-        Serial.print("no edge and no detection, will track ");
         // search the priorTracking
-        if (priorTracking == right) { // todo revert me
-          Serial.println("right");
+        if (priorTracking == right) {
           searchRight();
         } else {
-          Serial.println("left");
           searchLeft(); // TODO: low priority, make this something variable, seems silly to always have it search left
         }
       }
@@ -162,11 +185,6 @@ void fight() {
   brake(right); // before returning to the calling function, stop both motors!
   brake(left);
   return;
-  /**
-     TODO: consider, wouldn't it be better to go to wait() status instead of simply returning?
-     TEST: where does this go when it returns?  I think it would go to countdown, then immediately return to wait's while loop.
-     Verify it is so! jab 19 January 2019
-  */
 }
 
 void countDown() {
@@ -208,9 +226,8 @@ void wait() {
     if (getUsrBtn2()) {
       while (getUsrBtn2()) {} // wait until button is released
       countDown();
-      delay(1000); // not sure what this is doing.  Debouncing? That can't be it...
+      delay(1000); // not sure what this is doing.  It looks like when we go if we ever have a cancel mode out of countdown.
     }
-    // todo: consider putting in different statuses, like which opening move to do.
 
 
     if (currentCount > totalCount) {

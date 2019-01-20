@@ -58,21 +58,22 @@ int zThetaDisplacement = 0;
 */
 
 #define recoveryBrakeTime 100 // the amount of time in millis you hit the brakes when edge detecting
-#define recoveryReverseTime 100 // the amount of time in millis that you back up from the edge during fast mode, this is long enought to do 360 degrees!
-#define recoveryTurnTime 300 // the amount of time in millis that rotate away from the edge
+#define recoveryReverseTime 150 // the amount of time in millis that you back up from the edge during fast mode, this is long enought to do 360 degrees!
+#define recoveryTurnTime 150 // the amount of time in millis that rotate away from the edge
+#define recoveryStraightTime 100 // how long to go straght after turning away from edge
 #define openingMoveTime 150 // how long to perform the opening move
 
 #define longBlink 35
 #define shortBlink 5
 #define totalCount 50 // how many wait loops is the battery blinker?
-/*
+
 #define searchSpeed 120 // todo: can this be faster????? jab 19 Jan 2019
 #define attackSpeed 255
-*/
 
+/*
 #define searchSpeed 50 // todo revert me, this is ONLY for testing indoors at night.
 #define attackSpeed 80
-
+*/
 
 
 
