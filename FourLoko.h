@@ -5,11 +5,27 @@
    helper functions for FourLoko, my minisumo bot
 */
 
-int leftEdge() {
-  return analogRead(edgeLeft);
+/**
+   isEdge
+   is the analog reading on the PIN greater than a certain value
+   TODO: consider making pure: taking goodDohyo as an argument
+*/
+bool isEdge(int pin) {
+  bool result = false;
+  if (analogRead(pin) <= goodDohyo) { // possible ring edge detection
+    delay(5);
+    if (analogRead(pin) <= goodDohyo) {
+      result = true;
+    }
+  }
+  return result;
+}
+
+bool leftEdge() {
+  return isEdge(edgeLeft);
 }
 int rightEdge() {
-  return analogRead(edgeRight);
+  return isEdge(edgeRight);
 }
 
 bool getUsrBtn1() {
@@ -51,6 +67,9 @@ void printOpponentSensors(int *detectionArray) {
   Serial.println("");
 }
 
+/**
+   modifies memory as a pointer, so it is side effecty
+*/
 void getOpponentSensors(int *detectionArray) {
   detectionArray[0] = !digitalRead(fLefttPx);
   detectionArray[1] = !digitalRead(leftPx);
@@ -59,9 +78,13 @@ void getOpponentSensors(int *detectionArray) {
   detectionArray[4] = !digitalRead(fRightPx);
 }
 
-int whereIsOpponent() { // 0 is straight ahead, + is to the left - is to the right
-  int result = 0; // which direction did is the opponent, 0 is straight ahead, nothingDetected is no detection, -2 is far right, 2 is far left.
-  int detectionArray[5]; // declare array of current opponennt sensor states
+/**
+    0 is straight ahead, + is to the left - is to the right
+    returns the global "nothingDetected" or 999 if there is ntthing at all in the sensor's view
+*/
+int whereIsOpponent() {
+  int result = 0;
+  int detectionArray[5];
   int total = 0;
   int accum = 0;
 
@@ -73,15 +96,15 @@ int whereIsOpponent() { // 0 is straight ahead, + is to the left - is to the rig
     total += detectionArray[i]; // find total "mass" of the collection of bodies
   }
 
-  accum += 2*detectionArray[0];
-  accum += 1*detectionArray[1];
-  // the center one doesn't deflect the direction to either side!  
+  accum += 2 * detectionArray[0];
+  accum += 1 * detectionArray[1];
+  // the center one doesn't deflect the direction to either side!
   // accum += 0*detectionArray[2];
-  accum += -1*detectionArray[3];
-  accum += -2*detectionArray[4];
+  accum += -1 * detectionArray[3];
+  accum += -2 * detectionArray[4];
 
   result = total == 0 ? nothingDetected : accum / total;
-  
+
   return result;
 }
 
@@ -269,14 +292,14 @@ void setBlueLed(bool value) {
   }
 }
 
-void searchLeft(){
+void searchLeft() {
   motor(left, 0, braking);
   motor(right, searchSpeed, braking);
 }
 
-void searchRight(){
+void searchRight() {
   motor(left, searchSpeed, braking);
-  motor(right, 50, braking);
+  motor(right, 0, braking);
 }
 
 
