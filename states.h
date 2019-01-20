@@ -29,6 +29,7 @@ void dragRace() {
 
 void edgeRecover(int mode) {
   unsigned long edgeRecoverTime = millis(); // get the current time
+  int opponentPosition = nothingDetected;
   while (millis() < edgeRecoverTime + recoveryBrakeTime) { // how long to slam the brakes
     brake(right);
     brake(left);
@@ -36,41 +37,54 @@ void edgeRecover(int mode) {
   edgeRecoverTime = millis();
   while (millis() < edgeRecoverTime + recoveryReverseTime) { // how long to back it up
     // BIG TODO: put in opponent detection here so we can break out of this mess!!!!!!!
-    motor(left, -searchSpeed, braking);
-    motor(right, -searchSpeed, braking);
+    opponentPosition = whereIsOpponent();
+    if (opponentPosition == nothingDetected) {
+      motor(left, -searchSpeed, braking);
+      motor(right, -searchSpeed, braking);
+    } else {
+      return;
+    }
+
   }
 
 
-  brake(right); // TODO: REMOVE, JUST USING FOR DEBUGGIN
-  brake(left); // TODO: REMOVE, JUST USING FOR DEBUGGIN
-  delay(0); // TODO: REMOVE, JUST USING FOR DEBUGGIN
+  brake(right);
+  brake(left);
 
 
   edgeRecoverTime = millis();
   while (millis() < edgeRecoverTime + recoveryTurnTime) { // how long to turn to re-enter battle
     // BIG TODO: put in opponent detection here so we can break out of this mess!!!!!!!
-    if (mode == left) {
-      motor(left, searchSpeed, braking);
-      motor(right, -searchSpeed, braking);
+    opponentPosition = whereIsOpponent();
+    if (opponentPosition == nothingDetected) {
+      if (mode == left) {
+        motor(left, searchSpeed, braking);
+        motor(right, -searchSpeed, braking);
+      } else {
+        motor(left, -searchSpeed, braking);
+        motor(right, searchSpeed, braking);
+      }
     } else {
-      motor(left, -searchSpeed, braking);
-      motor(right, searchSpeed, braking);
+      return;
     }
+
   }
 
 
-  brake(right); // TODO: REMOVE, JUST USING FOR DEBUGGIN
-  brake(left); // TODO: REMOVE, JUST USING FOR DEBUGGIN
-  delay(0); // TODO: REMOVE, JUST USING FOR DEBUGGIN
+  brake(right);
+  brake(left);
 
   edgeRecoverTime = millis();
   while (millis() < edgeRecoverTime + recoveryStraightTime) { // go straight for a bit
     // BIG TODO: put in opponent detection here so we can break out of this mess!!!!!!!
+    opponentPosition = whereIsOpponent();
     if (leftEdge() || rightEdge()) {
       break;
-    } else {
+    } else if (opponentPosition == nothingDetected ) {
       motor(left, searchSpeed, braking);
       motor(right, searchSpeed, braking);
+    } else {
+      return;
     }
   }
 }
@@ -84,12 +98,11 @@ void fight() {
   bool rightEdgeDetected = false;
   bool lefttEdgeDetected = false;
 
-  // opening move, N.A. for now!
+  // opening move
   /**
      todo: jab 19 January 2019
      SHOULD HAVE SEVERAL OPTIONS BASED ON PUSHING THE usrButton 1
   */
-
   while ((millis() < fightBegan + openingMoveTime) && whereIsOpponent() == nothingDetected) {
     motor(left, searchSpeed, braking);
     motor(right, searchSpeed, braking);
@@ -97,16 +110,14 @@ void fight() {
 
   searchRight();
 
-  while (1) { // loop forever, only reset can stop this.
+  while (1) { // loop forever, only reset or mashing both buttons can stop this.
     now = millis();
     /**
        now is an important state marker.  It can time-bound what we are doing here.
        TODO: use now!!!!
     */
 
-
-    //    opponentPosition = whereIsOpponent(); // TODO: I REALLY MEAN THIS, UNCOMMENT THIS !!!!!! jab 20 JAN 2019
-    opponentPosition == nothingDetected; // todo: revert, just setting to NONE SO CAN DEBUG RING EDGE BEHAVIOR
+    opponentPosition = whereIsOpponent();
 
     if (getUsrBtn2() && getUsrBtn1()) {
       break;

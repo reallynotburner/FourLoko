@@ -61,7 +61,7 @@ int zThetaDisplacement = 0;
 #define recoveryReverseTime 150 // the amount of time in millis that you back up from the edge during fast mode, this is long enought to do 360 degrees!
 #define recoveryTurnTime 150 // the amount of time in millis that rotate away from the edge
 #define recoveryStraightTime 100 // how long to go straght after turning away from edge
-#define openingMoveTime 150 // how long to perform the opening move
+#define openingMoveTime 170 // how long to perform the opening move
 
 #define longBlink 35
 #define shortBlink 5
