@@ -302,6 +302,14 @@ void searchRight() {
   motor(right, 0, braking);
 }
 
+void startModeIncrement() {
+  startMode++;
+  if (startMode > numberStartModes) {
+    startMode = 0;
+    }
+}
+
+
 
 
 

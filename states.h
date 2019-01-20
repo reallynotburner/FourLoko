@@ -218,6 +218,7 @@ void countDown() {
   return;
 }
 
+
 /**
    wait
 
@@ -238,6 +239,11 @@ void wait() {
       while (getUsrBtn2()) {} // wait until button is released
       countDown();
       delay(1000); // not sure what this is doing.  It looks like when we go if we ever have a cancel mode out of countdown.
+    }
+
+    if (getUsrBtn1()) {
+      while (getUsrBtn1()) {} // wait until button is released
+      startModeIncrement();
     }
 
 

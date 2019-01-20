@@ -50,7 +50,7 @@ int zThetaDisplacement = 0;
 
 #define twentyPercentBattery 420
 #define fiftyPercentBattery 433
-#define goodDohyo 800 // the value below which you say you are detecting the edge
+#define goodDohyo 750 // the value below which you say you are detecting the edge
 /*
 #define recoveryBrakeTime 100 // the amount of time in millis you hit the brakes when edge detecting
 #define recoveryReverseTime 100 // the amount of time in millis that you back up from the edge
@@ -69,6 +69,9 @@ int zThetaDisplacement = 0;
 
 #define searchSpeed 120 // todo: can this be faster????? jab 19 Jan 2019
 #define attackSpeed 255
+
+int startMode = 0;
+int numberStartModes = 3;
 
 /*
 #define searchSpeed 50 // todo revert me, this is ONLY for testing indoors at night.
