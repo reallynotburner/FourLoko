@@ -302,11 +302,41 @@ void searchRight() {
   motor(right, 0, braking);
 }
 
+
+void showStartMode() {
+  int longModeBlink = 600;
+  int shortModeBlink = 25;
+  for (int i = 0; i < 6; i++) { // twinkle
+    setBlueLed(false);
+    delay(shortModeBlink);
+    setBlueLed(true);
+    delay(shortModeBlink);
+  }
+  for (int i = 0; i < (startMode + 1); i++) {
+    setBlueLed(false);
+    delay(longModeBlink);
+    setBlueLed(true);
+    delay(longModeBlink);
+  }
+  setBlueLed(false);
+
+  delay(longModeBlink);
+  for (int i = 0; i < 6; i++) { // twinkle
+    setBlueLed(false);
+    delay(shortModeBlink);
+    setBlueLed(true);
+    delay(shortModeBlink);
+  }
+  setBlueLed(false);
+  delay(longModeBlink);
+}
+
 void startModeIncrement() {
   startMode++;
-  if (startMode > numberStartModes) {
+  if (startMode >= numberStartModes) {
     startMode = 0;
-    }
+  }
+  showStartMode();
 }
 
 

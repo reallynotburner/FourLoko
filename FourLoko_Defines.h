@@ -71,13 +71,10 @@ int zThetaDisplacement = 0;
 #define attackSpeed 255
 
 int startMode = 0;
-int numberStartModes = 3;
-
-/*
-#define searchSpeed 50 // todo revert me, this is ONLY for testing indoors at night.
-#define attackSpeed 80
-*/
-
+int numberStartModes = 2;
+#define startForward 0;
+#define startLeft 1;
+#define startRight 2; 
 
 
 

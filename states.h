@@ -123,9 +123,6 @@ void fight() {
       break;
     }
     if (opponentPosition == nothingDetected) { // we can allow checking of line sensors
-      // TODO: recover from ring edge right sensor verfied working 19 January 2019
-      // TODO: recover from ring edge left sensor verfied working 19 January 2019
-
 
       lefttEdgeDetected = leftEdge();
       rightEdgeDetected = rightEdge();
@@ -217,7 +214,6 @@ void countDown() {
   fight();
   return;
 }
-
 
 /**
    wait
