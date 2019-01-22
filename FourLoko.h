@@ -302,35 +302,49 @@ void searchRight() {
   motor(right, 0, braking);
 }
 
-
+/**
+ * showStartMode
+ * This function is a user interface output.
+ * It twinkles the blueLED, the only consistently working LED on the robot :( to indicate
+ * it is about to show the mode you just switched to.
+ * Note that it is 1 indexed by converting 0 to 1 below.
+ * 
+ * TODO: should develop a general purpose interface, to make more display modes easier
+ * TODO: definitely add more LED's, like with Adafruit NeoPixels or something.
+ */
 void showStartMode() {
-  int longModeBlink = 600;
-  int shortModeBlink = 25;
-  for (int i = 0; i < 6; i++) { // twinkle
+  int longModeBlink = 600; // ms to indicate a blink for what mode you are in
+  int shortModeBlink = 25; // ms to indicate a twinkle before and after showing mode
+  
+  for (int i = 0; i < 6; i++) { // twinkle a bit
     setBlueLed(false);
     delay(shortModeBlink);
     setBlueLed(true);
     delay(shortModeBlink);
   }
-  for (int i = 0; i < (startMode + 1); i++) {
+  
+  for (int i = 0; i < (startMode + 1); i++) { // show with long blinks what mode we are in
     setBlueLed(false);
     delay(longModeBlink);
     setBlueLed(true);
     delay(longModeBlink);
   }
+  
   setBlueLed(false);
-
   delay(longModeBlink);
-  for (int i = 0; i < 6; i++) { // twinkle
+  
+  for (int i = 0; i < 6; i++) { // twinkle a bit more to indicate we are exiting display mode
     setBlueLed(false);
     delay(shortModeBlink);
     setBlueLed(true);
     delay(shortModeBlink);
   }
+  
   setBlueLed(false);
   delay(longModeBlink);
 }
 
+// each time called, advance to the next mode number, if exceeding bound, loop around to zero
 void startModeIncrement() {
   startMode++;
   if (startMode >= numberStartModes) {
