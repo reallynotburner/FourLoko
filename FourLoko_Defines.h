@@ -46,11 +46,11 @@ int zThetaDisplacement = 0;
 #define braking true
 #define detection  0
 #define noDetection 1
-#define nothingDetected 999
+#define nothingDetected 999 // this means the entire array of IR sensors is without detection.
 
 #define twentyPercentBattery 420
 #define fiftyPercentBattery 433
-#define goodDohyo 800 // the value below which you say you are detecting the edge
+#define goodDohyo 750 // Above this value, You can be sure that you are detecting good Dohyo surface
 /*
 #define recoveryBrakeTime 100 // the amount of time in millis you hit the brakes when edge detecting
 #define recoveryReverseTime 100 // the amount of time in millis that you back up from the edge
@@ -65,16 +65,20 @@ int zThetaDisplacement = 0;
 
 #define longBlink 35
 #define shortBlink 5
-#define totalCount 50 // how many wait loops is the battery blinker?
+#define totalCount 50 // how many wait loops is the battery blinker
 
 #define searchSpeed 120 // todo: can this be faster????? jab 19 Jan 2019
 #define attackSpeed 255
 
-/*
-#define searchSpeed 50 // todo revert me, this is ONLY for testing indoors at night.
-#define attackSpeed 80
-*/
-
+/**
+ * integer representation of the current mode, for code readability
+ * 
+ */
+int startMode = 0;
+int numberStartModes = 2;
+#define startForward 0;
+#define startLeft 1;
+#define startRight 2; 
 
 
 

@@ -6,6 +6,15 @@
 */
 unsigned long now = 0;
 
+/**
+ * dragRace
+ * Fun name for testing slew rate code.
+ * Hypothesis: if you change the commands to the motors at a certain rate, you won't
+ * have wheelies, and you'll have maximum traction.  Looks like about 250 uS is the
+ * minimum tiem we can wait and modify what the motors are doing.
+ * 
+ * Not currently used in the code.
+ */
 void dragRace() {
   now = millis();
   int currentSpeed = 0;
@@ -27,16 +36,25 @@ void dragRace() {
   brake(left);
 }
 
+/**
+ * edgeRecover
+ * When the edge is detected, this is how I want to get away from the edge.
+ * During backing up and turning, we will return if an oppponent detection occurs.
+ */
 void edgeRecover(int mode) {
   unsigned long edgeRecoverTime = millis(); // get the current time
   int opponentPosition = nothingDetected;
-  while (millis() < edgeRecoverTime + recoveryBrakeTime) { // how long to slam the brakes
+  
+  // how long to slam the brakes
+  while (millis() < edgeRecoverTime + recoveryBrakeTime) {
     brake(right);
     brake(left);
   }
-  edgeRecoverTime = millis();
-  while (millis() < edgeRecoverTime + recoveryReverseTime) { // how long to back it up
-    // BIG TODO: put in opponent detection here so we can break out of this mess!!!!!!!
+  
+  edgeRecoverTime = millis(); // reset the clock
+  
+  // how go backwards to get away from the edge
+  while (millis() < edgeRecoverTime + recoveryReverseTime) {
     opponentPosition = whereIsOpponent();
     if (opponentPosition == nothingDetected) {
       motor(left, -searchSpeed, braking);
@@ -44,7 +62,6 @@ void edgeRecover(int mode) {
     } else {
       return;
     }
-
   }
 
 
@@ -52,8 +69,10 @@ void edgeRecover(int mode) {
   brake(left);
 
 
-  edgeRecoverTime = millis();
-  while (millis() < edgeRecoverTime + recoveryTurnTime) { // how long to turn to re-enter battle
+  edgeRecoverTime = millis(); // reset the clock
+  
+  // how long to turn to re-enter Dohyo center area
+  while (millis() < edgeRecoverTime + recoveryTurnTime) {
     // BIG TODO: put in opponent detection here so we can break out of this mess!!!!!!!
     opponentPosition = whereIsOpponent();
     if (opponentPosition == nothingDetected) {
@@ -74,9 +93,10 @@ void edgeRecover(int mode) {
   brake(right);
   brake(left);
 
-  edgeRecoverTime = millis();
-  while (millis() < edgeRecoverTime + recoveryStraightTime) { // go straight for a bit
-    // BIG TODO: put in opponent detection here so we can break out of this mess!!!!!!!
+  edgeRecoverTime = millis(); // reset the clock
+  
+  // drive forward a bit to get away from the edge
+  while (millis() < edgeRecoverTime + recoveryStraightTime) {
     opponentPosition = whereIsOpponent();
     if (leftEdge() || rightEdge()) {
       break;
@@ -89,6 +109,10 @@ void edgeRecover(int mode) {
   }
 }
 
+/**
+ * fight
+ * This is the main loop we are in when when we are engaged in the sumo fight
+ */
 void fight() {
   unsigned long fightBegan = millis();
   setBlueLed(false); // turn off all lights
@@ -98,19 +122,26 @@ void fight() {
   bool rightEdgeDetected = false;
   bool lefttEdgeDetected = false;
 
-  // opening move
   /**
-     todo: jab 19 January 2019
-     SHOULD HAVE SEVERAL OPTIONS BASED ON PUSHING THE usrButton 1
+   * Opening Move
+     
+     todo: jab 19 January 2019 SHOULD HAVE SEVERAL OPTIONS BASED ON startMode
+     todo: jab 19 January 2019 ALSO: should move this to it's own function, because this is NOT fighting
   */
   while ((millis() < fightBegan + openingMoveTime) && whereIsOpponent() == nothingDetected) {
     motor(left, searchSpeed, braking);
     motor(right, searchSpeed, braking);
   }
+  searchRight(); // todo, should also modify which direction based on startMode
 
-  searchRight();
-
-  while (1) { // loop forever, only reset or mashing both buttons can stop this.
+  
+  /**
+   * main loop
+   * we detect if we are seeing opponent, 
+   * we call for edge recovery modes if we see the edge without an opponent detection
+   * we return if the user presses both buttons at the same time.
+   */
+  while (1) {
     now = millis();
     /**
        now is an important state marker.  It can time-bound what we are doing here.
@@ -120,12 +151,12 @@ void fight() {
     opponentPosition = whereIsOpponent();
 
     if (getUsrBtn2() && getUsrBtn1()) {
+      // TODO: during Sacrament RoboRumble grudge matches, the bot would go back to the wait loop
+      // Consider: debounce and noise reject here.
       break;
     }
-    if (opponentPosition == nothingDetected) { // we can allow checking of line sensors
-      // TODO: recover from ring edge right sensor verfied working 19 January 2019
-      // TODO: recover from ring edge left sensor verfied working 19 January 2019
-
+    // only if opponent sensors are dark, can we deal with Dohyo edge recovery
+    if (opponentPosition == nothingDetected) {
 
       lefttEdgeDetected = leftEdge();
       rightEdgeDetected = rightEdge();
@@ -238,6 +269,11 @@ void wait() {
       while (getUsrBtn2()) {} // wait until button is released
       countDown();
       delay(1000); // not sure what this is doing.  It looks like when we go if we ever have a cancel mode out of countdown.
+    }
+
+    if (getUsrBtn1()) {
+      while (getUsrBtn1()) {} // wait until button is released
+      startModeIncrement();
     }
 
 
